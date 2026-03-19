@@ -6,6 +6,7 @@ import router from './router'
 import ElInput2 from './components/ElInput2.vue'
 
 Vue.use(ElementUI)
+Vue.component('ElInput', ElInput2)
 Vue.component('ElInput2', ElInput2)
 
 new Vue({
