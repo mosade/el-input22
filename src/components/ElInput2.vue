@@ -1,5 +1,5 @@
 <template>
-  <el-input v-bind="inputProps" v-on="$listeners" :value="value" @input="$emit('input', $event)">
+  <el-input v-bind="mergedAttrs" v-on="listeners" :value="value" @input="$emit('input', $event)">
     <template v-for="(_, name) in $slots" v-slot:[name]>
       <slot :name="name" />
     </template>
@@ -16,22 +16,20 @@ export default {
   props: {
     value: {},
     maxlength: {
+      type: [Number, String],
       default: 4000
     }
   },
   computed: {
-    effectiveMaxlength() {
-      // null/0/"" disables maxlength; anything else (including default 4000) is used as-is
-      if (this.maxlength === null || this.maxlength === 0 || this.maxlength === '') {
-        return undefined
-      }
-      return this.maxlength
-    },
-    inputProps() {
+    mergedAttrs() {
       return {
         ...this.$attrs,
-        maxlength: this.effectiveMaxlength
+        maxlength: this.maxlength == null ? undefined : this.maxlength
       }
+    },
+    listeners() {
+      const { input, ...rest } = this.$listeners
+      return rest
     }
   }
 }
