@@ -1,8 +1,5 @@
 <template>
   <element-input ref="input" v-bind="mergedAttrs" v-on="listeners" :value="value" @input="$emit('input', $event)">
-    <template v-for="(_, name) in $slots" v-slot:[name]>
-      <slot :name="name" />
-    </template>
     <template v-for="(_, name) in $scopedSlots" v-slot:[name]="slotProps">
       <slot :name="name" v-bind="slotProps" />
     </template>
@@ -21,7 +18,7 @@ export default {
   props: {
     value: {},
     maxlength: {
-      type: [Number, String],
+      type: [Number, String, null],
       default: 4000
     }
   },
@@ -37,6 +34,16 @@ export default {
       return rest
     }
   },
+  mounted() {
+    Object.defineProperty(this, 'input', {
+      get: () => this.$refs.input && this.$refs.input.input,
+      configurable: true
+    })
+    Object.defineProperty(this, 'textarea', {
+      get: () => this.$refs.input && this.$refs.input.textarea,
+      configurable: true
+    })
+  },
   methods: {
     focus() {
       return this.$refs.input && this.$refs.input.focus()
@@ -49,6 +56,9 @@ export default {
     },
     clear() {
       return this.$refs.input && this.$refs.input.clear()
+    },
+    resizeTextarea() {
+      return this.$refs.input && this.$refs.input.resizeTextarea()
     }
   }
 }
